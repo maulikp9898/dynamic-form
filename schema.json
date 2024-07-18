@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "formId": {
+      "type": "string",
+      "description": "Unique identifier for the form"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the form"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the field"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["text", "number", "select", "multiselect", "radio", "checkbox", "textarea"],
+            "description": "Type of the form field"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label for the field"
+          },
+          "placeholder": {
+            "type": "string",
+            "description": "Placeholder text for the field"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether the field is required"
+          },
+          "validation": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number",
+                "description": "Minimum value for number inputs or minimum selections for multiselect"
+              },
+              "max": {
+                "type": "number",
+                "description": "Maximum value for number inputs or maximum selections for multiselect"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for text inputs"
+              }
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "Value of the option"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Label of the option"
+                }
+              },
+              "required": ["value", "label"]
+            },
+            "description": "Options for select, multiselect, radio, and checkbox inputs"
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "ID of the field this field depends on"
+                },
+                "value": {
+                  "type": ["string", "number", "boolean", "array"],
+                  "description": "Value(s) of the dependent field that trigger this field"
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": ["equals", "notEquals", "in", "notIn", "greaterThan", "lessThan"],
+                  "default": "equals",
+                  "description": "Comparison operator for the dependency"
+                }
+              },
+              "required": ["field", "value"]
+            },
+            "description": "Array of dependencies for this field"
+          },
+          "dataSource": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["api", "function"],
+                "description": "Type of data source"
+              },
+              "url": {
+                "type": "string",
+                "description": "URL for API data source"
+              },
+              "method": {
+                "type": "string",
+                "enum": ["GET", "POST"],
+                "description": "HTTP method for API data source"
+              },
+              "functionName": {
+                "type": "string",
+                "description": "Name of the function to call for function data source"
+              },
+              "transformation": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "JSONPath expression to extract the relevant data"
+                  },
+                  "mapping": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Field to use as the option value"
+                      },
+                      "label": {
+                        "type": "string",
+                        "description": "Field to use as the option label"
+                      }
+                    },
+                    "required": ["value", "label"]
+                  }
+                },
+                "required": ["path", "mapping"]
+              }
+            },
+            "required": ["type", "transformation"]
+          }
+        },
+        "required": ["id", "type", "label"]
+      }
+    }
+  },
+  "required": ["formId", "title", "fields"]
+}
